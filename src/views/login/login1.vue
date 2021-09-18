@@ -4,12 +4,16 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import loginPanel from './cpns/loginPanel.vue'
 
-// {
-//   loginPanel
-// }
+export default defineComponent({
+  components: { loginPanel },
+  setup() {
+    return {}
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -19,6 +23,6 @@ import loginPanel from './cpns/loginPanel.vue'
   justify-content: center;
   height: 100%;
   width: 100%;
-  /* background: url('../../assets/img/wallhaven-6owpoq.jpg') 0 0 no-repeat; */
+  background: url('../../assets/img/wallhaven-6owpoq.jpg') 0 0 no-repeat;
 }
 </style>
