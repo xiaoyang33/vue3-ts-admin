@@ -13,5 +13,5 @@ const app = createApp(App)
 // 全局引用
 app.use(register)
 
-app.use(router).use(store).mount('#app')
 setupStore()
+app.use(router).use(store).mount('#app')

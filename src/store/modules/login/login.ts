@@ -2,7 +2,11 @@ import { Module } from 'vuex'
 import { ILogin } from '@/api/login/types'
 import { getUserMenu, loginRequest, requestUserInfo } from '@/api/login/login'
 import cache from '@/utils/cache'
-const loginModule: Module<any, any> = {
+import mapMenus from '@/router/map-menus'
+import $router from '@/router'
+import { IRootState } from '@/store/types'
+import { ILoginState } from './types'
+const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
   state() {
     return {
@@ -12,7 +16,7 @@ const loginModule: Module<any, any> = {
     }
   },
   mutations: {
-    changeToken(state, payload) {
+    changeToken(state, payload = '') {
       state.token = payload
     },
     changeUserInfo(state, payload) {
@@ -20,6 +24,7 @@ const loginModule: Module<any, any> = {
     },
     changeUserMenus(state, payload) {
       state.userMenus = payload
+      mapMenus()
     }
   },
   actions: {
@@ -39,6 +44,8 @@ const loginModule: Module<any, any> = {
       const menu = await getUserMenu(data.role.id)
       commit('changeUserMenus', menu.data)
       cache.set('userMenus', menu.data)
+      // 跳转首页
+      $router.replace('/main')
     },
     loadLocal({ commit }) {
       const token = cache.get('token')

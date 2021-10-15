@@ -22,8 +22,8 @@ export default defineComponent({
     const $store = useStore()
     const formElRef = ref<InstanceType<typeof ElForm>>()
     const account = reactive({
-      name: acc.isKeepPassword ? acc.name : '',
-      password: acc.isKeepPassword ? acc.password : ''
+      name: acc.isKeepPassword ? acc.name : 'coderwhy',
+      password: acc.isKeepPassword ? acc.password : '123456'
     })
 
     const rules = {
