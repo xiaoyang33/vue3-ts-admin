@@ -19,7 +19,8 @@
                   end-placeholder="结束日期"
                   :size="size"
                   v-bind="item.otherOptions"
-                  v-model="formData[item.field]"
+                  :model-value="modelValue[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
                 </el-date-picker>
               </template>
@@ -27,7 +28,8 @@
                 <el-select
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
-                  v-model="formData[item.field]"
+                  :model-value="modelValue[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.selectOptions"
@@ -41,7 +43,8 @@
               <template v-else>
                 <el-input
                   :size="size"
-                  v-model="formData[item.field]"
+                  :model-value="modelValue[item.field]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                   :show-password="item.iptType === 'password'"
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
@@ -93,16 +96,35 @@ export default defineComponent({
         sm: 24,
         xs: 24
       })
+    },
+    showResetBtn: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const formData = reactive({ ...props.modelValue })
-    watch(formData, (newVal) => emit('update:modelValue', newVal), {
-      deep: true
-    })
+    // 1.双向绑定式
+    // const formData = reactive({ ...props.modelValue })
+    // watch(formData, (newVal) => emit('update:modelValue', newVal), {
+    //   deep: true
+    // })
+    /**
+     * 重置搜索数据
+     */
+    // const handleReset = () => {
+    //   Object.keys(formData).forEach((key: any) => {
+    //     formData[key] = ''
+    //   })
+    // }
+    // 2. 数据绑定式
+    const handleValueChange = (value: any, field: string) => {
+      emit('update:modelValue', { ...props.modelValue, [field]: value })
+    }
     return {
-      formData
+      // formData,
+      // handleReset,
+      handleValueChange
     }
   }
 })

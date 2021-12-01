@@ -7,8 +7,10 @@ export interface ISelectOptions {
 
 export interface IFormItems {
   label: string
+  // 匹配字段
   field: string
   placeholder?: string
+  // 输入框类型
   iptType?: iptType
   selectOptions?: ISelectOptions[]
   rules?: any[]

@@ -32,11 +32,11 @@ const FormConfig: IForm = {
 export default FormConfig
 
 export const propList = [
-  { prop: 'name', label: '用户名' },
-  { prop: 'realname', label: '姓名' },
-  { prop: 'cellphone', label: '手机号', minWidth: 130 },
-  { prop: 'enable', label: '状态' },
-  { prop: 'createAt', label: '创建时间', minWidth: 130 },
-  { prop: 'updateAt', label: '更新时间', minWidth: 130 },
-  { prop: 'handler', label: '操作', minWidth: 200 }
+  { prop: 'name', label: '商品名称', showOverflowTooltip: true },
+  { prop: 'oldPrice', label: '原价' },
+  { prop: 'newPrice', label: '现价' },
+  { prop: 'imgUrl', label: '图片' },
+  { prop: 'status', label: '状态' },
+  { prop: 'saleCount', label: '销售数量' },
+  { prop: 'handler', label: '操作',minWidth: 200 },
 ]

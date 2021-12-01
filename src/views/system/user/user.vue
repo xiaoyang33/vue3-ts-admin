@@ -5,86 +5,122 @@
         <h3>我是检索标题</h3>
       </template>
       <template #footer>
-        <el-button type="primary" icon="el-icon-refresh" plain>重置</el-button>
-        <el-button type="primary" icon="el-icon-search" plain>搜索</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-refresh"
+          size="mini"
+          plain
+          @click="handleReset"
+          >重置</el-button
+        >
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          plain
+          @click="handleSearch"
+          >搜索</el-button
+        >
       </template>
     </y-form>
     <y-table
       :table-data="userList"
       :prop-list="propList"
       :is-loading="isLoading"
+      showIndexColumn
+      title="用户列表"
     >
+      <template #headerHandler>
+        <el-button type="primary" size="mini">新增用户</el-button>
+      </template>
       <template #enable="{ row }">
         {{ row.enable === 1 ? '启用' : '禁用' }}
       </template>
       <template #createAt="{ row }">
-        {{ formatDate(row.createAt) }}
+        {{ $filters.formatTime1(row.createAt) }}
       </template>
       <template #updateAt="{ row }">
-        {{ formatDate(row.updateAt) }}
+        {{ $filters.formatTime1(row.updateAt) }}
       </template>
-      <template #oper>
-        <el-button size="mini" type="primary" plain>编辑</el-button>
-        <el-button size="mini" type="danger" plain>删除</el-button>
+      <template #handler="{ row }">
+        <el-button
+          size="mini"
+          :type="row.enable === 1 ? 'warning' : 'primary'"
+          plain
+          >{{ row.enable === 1 ? '禁用' : '启用' }}</el-button
+        >
+      </template>
+      <template #footer>
+        <y-pagination v-model:page="page" :total="page.total" />
       </template>
     </y-table>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs } from 'vue'
 
 import YForm from '@/base-ui/form'
 import YTable from '@/base-ui/table'
+import YPagination from '@/components/common/pagination'
 import { getSystemUserListApi } from '@/api/system'
-import { formatDateToStyle, DateFormat } from '@/utils/format'
 import fromConfig, { propList } from './config'
+import { useSearch, usePages } from '@/hooks'
 
 export default defineComponent({
   components: {
     YForm,
-    YTable
+    YTable,
+    YPagination
   },
   setup() {
-    // 顶部输出框数据
-    const formData = ref({
-      username: '',
-      password: '',
-      sport: '',
-      createDate: ''
-    })
+    // 顶部搜索框数据
+    const formDataObj = {
+      name: '',
+      realname: '',
+      enable: ''
+    }
     const state = reactive({
       isLoading: false,
       userList: []
     })
+    // 分页处理
+    const [page, pageQuery, updateList] = usePages()
 
-    /** listData propList
+    /**
      * 获取用户列表
      */
-    const getSystemUserList = async () => {
+    const getSystemUserList = async (queryInfo?: any) => {
       state.isLoading = true
       let res = await getSystemUserListApi({
-        offset: 1,
-        size: 10
+        ...pageQuery.value,
+        ...queryInfo
       })
       state.userList = res.data.list
+      page.value.total = res.data.totalCount
       setTimeout(() => {
         state.isLoading = false
-      }, 1000)
+      }, 200)
       console.log(res)
     }
-    getSystemUserList()
-    /**
-     * 格式化时间
-     */
-    const formatDate = (date: string) => {
-      return formatDateToStyle(date, DateFormat.format1)
-    }
+    // 获取数据
+    updateList(getSystemUserList)
+
+    // 搜索处理
+    const [formData, handleSearch, handleReset] = useSearch(
+      formDataObj,
+      getSystemUserList
+    )
     return {
+      // 配置文件
       fromConfig,
       formData,
       propList,
-      formatDate,
+      // 操作
+      handleSearch,
+      handleReset,
+      // 数据
+      page,
       ...toRefs(state)
     }
   }
